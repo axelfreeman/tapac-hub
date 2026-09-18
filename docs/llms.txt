@@ -48,3 +48,6 @@ Free key: https://tapacapi.com/get-key
 ## Free tools
 - MCP server readiness checklist (12 checks, live score): https://axelfreeman.github.io/tapac-hub/mcp-readiness.html
 - Lead cost & bounce-risk calculator: https://axelfreeman.github.io/tapac-hub/lead-cost-calculator.html
+
+## Where TAPAC is published (all footprints, with links)
+- Index of every public TAPAC footprint: https://axelfreeman.github.io/tapac-hub/around-the-web.html
