@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MCP server readiness checklist — is your server installable by an agent?</title>
+<meta name="description" content="Free 12-point checklist for MCP servers: can an agent find, install and call your server without a human? Live score, copyable test commands, no signup, runs in your browser.">
+<link rel="canonical" href="https://axelfreeman.github.io/tapac-hub/mcp-readiness.html">
+<link rel="alternate" type="text/plain" href="/tapac-hub/llms.txt">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font:16px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0b0d10;color:#e6e8eb;padding:0 20px}
+.wrap{max-width:860px;margin:0 auto;padding:56px 0 80px}
+h1{font-size:2.05rem;line-height:1.22;letter-spacing:-.02em;margin-bottom:14px}
+h2{font-size:1.18rem;margin:34px 0 10px;border-bottom:1px solid #1e2228;padding-bottom:8px}
+p{margin:0 0 14px;color:#b9c0c8}
+a{color:#5ee0a0;text-decoration:none}a:hover{text-decoration:underline}
+.lead{font-size:1.08rem;color:#dfe3e8}
+code{font-family:ui-monospace,Menlo,monospace;background:#171c22;padding:2px 6px;border-radius:5px;font-size:.88em;color:#9fe8c4}
+pre{font-family:ui-monospace,Menlo,monospace;background:#12161b;border:1px solid #1e2228;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:.86rem;color:#d7f5e6;margin:0 0 16px}
+.panel{background:#11151a;border:1px solid #1e2228;border-radius:12px;padding:18px 20px;margin:18px 0}
+.item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #1a1f25}
+.item:last-child{border-bottom:0}
+.item input{margin-top:5px;width:17px;height:17px;accent-color:#5ee0a0;flex:0 0 auto}
+.item .t{font-size:.95rem;color:#dfe3e8}
+.item .h{font-size:.83rem;color:#7d8590;margin-top:2px}
+.bar{height:10px;background:#1a1f25;border-radius:6px;overflow:hidden;margin:10px 0 6px}
+.bar>i{display:block;height:100%;width:0;background:#5ee0a0;transition:width .25s}
+.score{font-size:1.5rem;font-weight:600;color:#5ee0a0}
+.verdict{font-size:.95rem;color:#b9c0c8}
+.cta{display:inline-block;background:#5ee0a0;color:#06120c;font-weight:600;padding:12px 20px;border-radius:9px;margin:6px 8px 6px 0}
+button{background:transparent;color:#8b949e;border:1px solid #262c34;border-radius:8px;padding:7px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.note{font-size:.83rem;color:#7d8590}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:10px 0}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1e2228}
+th{color:#8b949e;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid #1e2228;font-size:.83rem;color:#7d8590}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Is your MCP server actually installable by an agent?</h1>
+<p class="lead">A server that works on your laptop is not the same thing as a server an agent can find, install and call on its own. These are the 12 checks that decide whether that happens — the ones we had to pass to ship TAPAC as <code>npx -y @tapacapi/mcp</code>.</p>
+<p class="note">Tick what you already have. The score is computed in your browser from your own answers; nothing is sent anywhere.</p>
+
+<h2>Score</h2>
+<div class="panel">
+  <div class="score" id="sc">0 / 12</div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="verdict" id="vd">Tick the boxes below.</div>
+  <div style="margin-top:12px"><button onclick="reset()">Reset</button></div>
+</div>
+
+<form id="f">
+<h2>1. Discovery — can the agent find you at all?</h2>
+<div class="panel" id="g1">
+  <label class="item"><input type="checkbox"><span><span class="t">A stable machine-readable manifest exists at a fixed URL (<code>llms.txt</code>, <code>SKILL.md</code>, <code>AGENTS.md</code> or <code>plugin.json</code>).</span><span class="h">Agents are pointed at URLs, not at your marketing page. One file, one URL, no auth.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">The repo carries the <code>mcp-server</code> / <code>mcp</code> topic and a one-line description that says what it returns.</span><span class="h">Directories index by topic; the description is what an agent quotes back.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">Installable from a public registry (<code>npm</code> / <code>PyPI</code>), not only from a git clone.</span><span class="h">Test: <code>npm view &lt;pkg&gt; version</code> returns a version.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">The install block is copy-pasteable JSON for the main clients (Claude, Cursor, Codex, VS Code).</span><span class="h">A human should not have to read source to wire it up.</span></span></label>
+</div>
+
+<h2>2. Install &amp; transport — does it start with nothing?</h2>
+<div class="panel" id="g2">
+  <label class="item"><input type="checkbox"><span><span class="t"><code>npx -y &lt;pkg&gt;</code> (or <code>uvx</code>) runs the server over stdio with no prior state.</span><span class="h">No build step, no <code>git clone</code>, no <code>npm install</code> first.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">It boots and answers <code>tools/list</code> without credentials.</span><span class="h">Missing key = informative onboarding response, not a stack trace. Otherwise the agent gives up on step one.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">The transport is stated explicitly — stdio and/or a hosted HTTP endpoint.</span><span class="h">"It's an MCP server" is not a transport.</span></span></label>
+</div>
+
+<h2>3. Tool surface — can the agent use it without guessing?</h2>
+<div class="panel" id="g3">
+  <label class="item"><input type="checkbox"><span><span class="t">Every tool description states what it returns and what the required arguments are.</span><span class="h">The description is the prompt. Vague descriptions produce invented arguments.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">Inputs are constrained by a schema (types, enums, min/max), not free-form strings.</span><span class="h">Enums stop the agent from passing <code>industry: "SaaS-ish"</code>.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">Failures return a structured, actionable error instead of an empty result.</span><span class="h">"No contacts matched — widen <code>company_size</code>" beats <code>[]</code>.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">There is a status/health tool reporting version, credential state and upstream reachability.</span><span class="h">This is the first thing a debugging agent will call.</span></span></label>
+</div>
+
+<h2>4. Trust — can an agent recommend you?</h2>
+<div class="panel" id="g4">
+  <label class="item"><input type="checkbox"><span><span class="t">Pricing is public and per use, with no sales call and no seat licence in the way.</span><span class="h">A price an agent can quote is a price a buyer can approve.</span></span></label>
+  <label class="item"><input type="checkbox"><span><span class="t">Every factual claim in the README has a name next to it (source, or a command you can paste).</span><span class="h">Unsourced numbers are what makes reviewers close the tab.</span></span></label>
+</div>
+</form>
+
+<h2>Test the package, not the README</h2>
+<pre>npx -y @tapacapi/mcp        # boots, answers tools/list, asks for a key instead of guessing
+npx -y @tapacapi/mcp --help # version + install notes</pre>
+<p class="note">Running the same three commands against your own package is the whole audit: does it start clean, does it list tools, does it behave without a key.</p>
+
+<h2>How TAPAC scores on its own list</h2>
+<table>
+<tr><th>Check</th><th>TAPAC</th></tr>
+<tr><td>Manifest</td><td><a href="https://github.com/axelfreeman/tapac-mcp/blob/main/SKILL.md">SKILL.md</a>, <a href="https://github.com/axelfreeman/tapac-mcp/blob/main/AGENTS.md">AGENTS.md</a>, <a href="https://github.com/axelfreeman/tapac-mcp/blob/main/plugin.json">plugin.json</a>, <a href="/tapac-hub/llms.txt">llms.txt</a></td></tr>
+<tr><td>Registry</td><td>npm <code>@tapacapi/mcp</code>, PyPI <code>tapac-sdk</code></td></tr>
+<tr><td>Transport</td><td>stdio via npx/uvx + hosted endpoint</td></tr>
+<tr><td>Tools</td><td><code>tapac_find_contacts</code>, <code>tapac_status</code></td></tr>
+<tr><td>No key</td><td>returns onboarding, not errors</td></tr>
+<tr><td>Pricing</td><td>$0.10–0.50 per contact, 100 searches free — <a href="https://tapacapi.com/get-key">tapacapi.com/get-key</a></td></tr>
+</table>
+
+<h2>Do the same audit for the data layer</h2>
+<p>Readiness gets you installed. Verified contacts are what keeps the loop worth running: <a href="/tapac-hub/lead-cost-calculator.html">lead cost &amp; bounce-risk calculator</a> · <a href="/tapac-hub/compare.html">TAPAC vs Apollo / ZoomInfo / Hunter / Lusha</a>.</p>
+<p><a class="cta" href="https://tapacapi.com/get-key">Get a free API key</a>
+<a class="cta" href="https://github.com/axelfreeman/tapac-mcp">Read the repo</a></p>
+
+<footer>
+<p>Free tool, no signup, no tracking. Figures used on this page come from the TAPAC repository manifests or from the vendor pricing pages linked on the comparison page; nothing here is an invented benchmark.</p>
+</footer>
+</div>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"MCP server readiness checklist","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://axelfreeman.github.io/tapac-hub/mcp-readiness.html","description":"12-point checklist and live score for whether an MCP server can be found, installed and called by an agent without a human."}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What makes an MCP server ready for agents?","acceptedAnswer":{"@type":"Answer","text":"Twelve checks in four groups: discovery (machine-readable manifest at a fixed URL, mcp-server topic, public registry install, copy-pasteable client JSON), install and transport (npx/uvx over stdio with no prior state, boots without credentials, transport stated explicitly), tool surface (descriptions that state return values, schema-constrained inputs, structured errors, a status tool), and trust (public per-use pricing, sourced claims)."}},
+{"@type":"Question","name":"Should an MCP server start without an API key?","acceptedAnswer":{"@type":"Answer","text":"Yes. It should boot and answer tools/list without credentials and return an onboarding response instead of an error, so a client can wire it up before the key exists. TAPAC works this way: without a key the server returns onboarding rather than guessed contacts."}},
+{"@type":"Question","name":"What is the minimum useful install command for an MCP server?","acceptedAnswer":{"@type":"Answer","text":"A single command that works with no prior state, such as npx -y @tapacapi/mcp, plus a hosted HTTP endpoint for clients that cannot spawn processes. No git clone and no build step should be required."}}]}
+</script>
+<script>
+var boxes=[].slice.call(document.querySelectorAll('#f input[type=checkbox]'));
+function upd(){var n=boxes.filter(function(b){return b.checked}).length;
+document.getElementById('sc').textContent=n+' / '+boxes.length;
+document.getElementById('bar').style.width=(100*n/boxes.length)+'%';
+var v;if(n<=3)v='Not installable by an agent yet. Start with group 1 — without a manifest and a registry entry nothing else is reachable.';
+else if(n<=6)v='Partially ready: findable and installable, but the tool surface or trust layer will cost you calls.';
+else if(n<=9)v='Mostly ready. The remaining gaps are usually the status tool and sourced claims — cheap to fix, visible to reviewers.';
+else if(n<=11)v='Ready to be installed and called autonomously. Fix the last gap and re-run the three test commands.';
+else v='Fully ready: an agent can find, install, call and quote you without a human in the loop.';
+document.getElementById('vd').textContent=v;}
+boxes.forEach(function(b){b.addEventListener('change',upd)});
+function reset(){boxes.forEach(function(b){b.checked=false});upd()}
+upd();
+</script>
+</body>
+</html>

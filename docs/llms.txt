@@ -44,3 +44,7 @@ Free key: https://tapacapi.com/get-key
 - npm: https://www.npmjs.com/package/@tapacapi/mcp
 - PyPI SDK: https://pypi.org/project/tapac-sdk/
 - Comparison page: https://axelfreeman.github.io/tapac-hub/compare.html
+
+## Free tools
+- MCP server readiness checklist (12 checks, live score): https://axelfreeman.github.io/tapac-hub/mcp-readiness.html
+- Lead cost & bounce-risk calculator: https://axelfreeman.github.io/tapac-hub/lead-cost-calculator.html
