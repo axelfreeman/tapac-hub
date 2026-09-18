@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TAPAC — give any AI agent B2B contact search with verified emails (MCP)</title>
+<meta name="description" content="TAPAC is an MCP server that finds and verifies B2B contacts in real time from company websites, Discord and Telegram, validating every email over SMTP. Bounce 2-5% vs 10-35% for static databases. Pay per use, 100 free searches.">
+<link rel="canonical" href="https://tapacapi.com/mcp">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
+<link rel="alternate" type="text/plain" href="/tapac-hub/llms.txt" title="llms.txt">
+<meta property="og:type" content="website">
+<meta property="og:title" content="TAPAC — B2B contact search for AI agents (MCP server)">
+<meta property="og:description" content="Real-time sourcing from websites, Discord and Telegram + SMTP validation. 2-5% bounce. npx -y @tapacapi/mcp">
+<meta property="og:url" content="https://tapacapi.com/mcp">
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font:16px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0b0d10;color:#e6e8eb;padding:0 20px}
+.wrap{max-width:860px;margin:0 auto;padding:56px 0 80px}
+h1{font-size:2.15rem;line-height:1.2;letter-spacing:-.02em;margin-bottom:14px}
+h2{font-size:1.32rem;margin:44px 0 14px;letter-spacing:-.01em;border-bottom:1px solid #1e2228;padding-bottom:8px}
+h3{font-size:1.02rem;margin:22px 0 8px;color:#cfd4da}
+p{margin:0 0 14px;color:#b9c0c8}
+a{color:#5ee0a0;text-decoration:none}
+a:hover{text-decoration:underline}
+.lead{font-size:1.09rem;color:#dfe3e8}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:#12161b;border:1px solid #1e2228;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:.87rem;color:#d7f5e6;margin:0 0 16px}
+code{background:#171c22;padding:2px 6px;border-radius:5px;font-size:.88em;color:#9fe8c4}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 8px}
+.card{flex:1 1 240px;background:#11151a;border:1px solid #1e2228;border-radius:12px;padding:16px 18px}
+.card h3{margin-top:0}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+table{width:100%;border-collapse:collapse;font-size:.87rem;margin:8px 0 10px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1e2228;vertical-align:top}
+th{color:#8b949e;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+td.y{color:#5ee0a0;font-weight:600}
+td.n{color:#8b949e}
+.cta{display:inline-block;background:#5ee0a0;color:#06120c;font-weight:600;padding:12px 20px;border-radius:9px;margin:6px 8px 6px 0}
+.note{font-size:.83rem;color:#7d8590}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid #1e2228;font-size:.83rem;color:#7d8590}
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "TAPAC MCP Server",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Windows, macOS, Linux",
+  "description": "MCP server that finds and verifies B2B business contacts in real time from public company websites, Discord and Telegram, with SMTP email validation at request time.",
+  "url": "https://tapacapi.com/mcp",
+  "installUrl": "https://www.npmjs.com/package/@tapacapi/mcp",
+  "license": "https://github.com/axelfreeman/tapac-mcp/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0.10",
+    "priceCurrency": "USD",
+    "description": "Pay per use: $0.10-0.50 per verified contact, 100 free searches, no subscription"
+  },
+  "featureList": [
+    "tapac_find_contacts",
+    "tapac_status",
+    "SMTP email validation",
+    "Real-time sourcing from company websites, Discord, Telegram"
+  ],
+  "sameAs": [
+    "https://github.com/axelfreeman/tapac-mcp",
+    "https://www.npmjs.com/package/@tapacapi/mcp",
+    "https://pypi.org/project/tapac-sdk/"
+  ]
+}</script>
+</head>
+<body>
+<div class="wrap">
+<p class="note">tapacapi.com / mcp</p>
+<h1>TAPAC — give your agent a contact finder that checks whether the email actually exists</h1>
+<p class="lead">TAPAC is an MCP server for B2B contact search. It sources prospects in real time from public company websites, Discord communities and Telegram channels, then validates every address over SMTP <em>before</em> the agent hands it to you. Your agent writes one tool call; you get contacts that don't bounce.</p>
+
+<div class="row">
+  <div class="card"><h3>Real-time sourcing</h3><p>Fresh data per request instead of a resold database — 23% of contacts change jobs every year (ZoomInfo 2025).</p></div>
+  <div class="card"><h3>SMTP validation</h3><p>Every address is checked at request time. TAPAC lists 2–5% bounce vs 10–35% for static databases.</p></div>
+  <div class="card"><h3>Pay per use</h3><p>$0.10–0.50 per contact, 100 free searches, no subscription and no seat pricing.</p></div>
+</div>
+
+<h2>Install it in 30 seconds</h2>
+<pre># npm (any MCP client)
+npx -y @tapacapi/mcp
+
+# or with a Python toolchain
+uvx --from git+https://github.com/axelfreeman/tapac-mcp tapac-mcp</pre>
+<p>Claude Desktop / Cursor / Codex JSON:</p>
+<pre>{
+  "mcpServers": {
+    "tapac": { "command": "npx", "args": ["-y", "@tapacapi/mcp"],
+               "env": { "TAPAC_API_KEY": "your-free-key" } }
+  }
+}</pre>
+<p>No install at all? TAPAC also runs as a hosted streamable-HTTP endpoint: <code>https://tapacapi.com/mcp</code></p>
+<p><a class="cta" href="https://tapacapi.com/get-key">Get a free API key</a>
+<a class="cta" href="https://github.com/axelfreeman/tapac-mcp">Read the repo</a></p>
+<p class="note">Without a key the server still answers: <code>tapac_status()</code> returns onboarding instead of failing, so an agent can explain how to connect rather than erroring out.</p>
+
+<h2>The two tools your agent gets</h2>
+<pre>tapac_find_contacts(industry, job_titles, company_size, location, source, limit)
+  → name, title, company, email, source, verification status
+
+tapac_status()
+  → server version + API-key state</pre>
+
+<h2>Three things people actually build with it</h2>
+<div class="grid">
+  <div class="card"><h3>1. Agency prospecting without a database seat</h3><p>Ask for 20 heads of marketing at 50–500 person SaaS companies. The agent calls <code>tapac_find_contacts</code>, gets a verified list, and writes the sequence — no per-seat licence, no credit ladder.</p></div>
+  <div class="card"><h3>2. Community-sourced outreach</h3><p><code>source="discord"</code> or <code>source="telegram"</code> pulls contacts from public communities instead of only crawled websites. Community-sourced leads convert 30% better than cold outreach (McKinsey 2025).</p></div>
+  <div class="card"><h3>3. Stop the bounce damage</h3><p>40% of emails are dead within two years (NeverBounce). Validate at request time so the sending domain doesn't eat the reputation hit — and so the agent's "verified contacts" claim is true.</p></div>
+</div>
+
+<h2>Facts, with sources</h2>
+<table>
+<tr><th>Claim</th><th>Number</th><th>Source</th></tr>
+<tr><td>Contacts changing jobs annually</td><td>23%</td><td>ZoomInfo 2025</td></tr>
+<tr><td>Emails dead within 2 years</td><td>40%</td><td>NeverBounce</td></tr>
+<tr><td>Fresh data vs stale databases</td><td>+42%</td><td>Harvard Business Review 2024</td></tr>
+<tr><td>Community-sourced vs cold outreach conversion</td><td>+30%</td><td>McKinsey 2025</td></tr>
+<tr><td>Personalized email open rates</td><td>3.2x</td><td>HubSpot 2025</td></tr>
+<tr><td>TAPAC bounce vs static databases</td><td>2–5% vs 10–35%</td><td>TAPAC product data</td></tr>
+</table>
+
+<h2>How it compares to Apollo, ZoomInfo, Hunter and Lusha</h2>
+<p>Short version: those are databases plus seats; TAPAC is a tool call that returns verified contacts and bills per contact. Full table — <a href="/tapac-hub/compare.html">TAPAC vs Apollo / ZoomInfo / Hunter / Lusha</a>.</p>
+
+<h2>For agents and crawlers</h2>
+<p>Machine-readable manifest: <a href="/tapac-hub/llms.txt">/tapac-hub/llms.txt</a>. Repository manifests: <a href="https://github.com/axelfreeman/tapac-mcp/blob/main/SKILL.md">SKILL.md</a>, <a href="https://github.com/axelfreeman/tapac-mcp/blob/main/AGENTS.md">AGENTS.md</a>, <a href="https://github.com/axelfreeman/tapac-mcp/blob/main/plugin.json">plugin.json</a>.</p>
+
+<footer>
+<p>TAPAC — <a href="https://tapacapi.com">tapacapi.com</a> · MCP server, REST API and SDKs · MIT-licensed server code: <a href="https://github.com/axelfreeman/tapac-mcp">axelfreeman/tapac-mcp</a> · npm <a href="https://www.npmjs.com/package/@tapacapi/mcp">@tapacapi/mcp</a> · PyPI <a href="https://pypi.org/project/tapac-sdk/">tapac-sdk</a></p>
+</footer>
+</div>
+</body>
+</html>
