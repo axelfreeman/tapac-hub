@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TAPAC vs Apollo vs ZoomInfo vs Hunter vs Lusha — B2B contact data compared (2026)</title>
+<meta name="description" content="Side-by-side: TAPAC (MCP, pay-per-contact, SMTP-verified) against Apollo, ZoomInfo, Hunter.io and Lusha — sourcing model, verification, bounce rates, published pricing and agent/MCP support.">
+<link rel="canonical" href="https://tapacapi.com/mcp">
+<meta name="robots" content="index,follow,max-snippet:-1">
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font:16px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0b0d10;color:#e6e8eb;padding:0 20px}
+.wrap{max-width:860px;margin:0 auto;padding:56px 0 80px}
+h1{font-size:2.15rem;line-height:1.2;letter-spacing:-.02em;margin-bottom:14px}
+h2{font-size:1.32rem;margin:44px 0 14px;letter-spacing:-.01em;border-bottom:1px solid #1e2228;padding-bottom:8px}
+h3{font-size:1.02rem;margin:22px 0 8px;color:#cfd4da}
+p{margin:0 0 14px;color:#b9c0c8}
+a{color:#5ee0a0;text-decoration:none}
+a:hover{text-decoration:underline}
+.lead{font-size:1.09rem;color:#dfe3e8}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:#12161b;border:1px solid #1e2228;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:.87rem;color:#d7f5e6;margin:0 0 16px}
+code{background:#171c22;padding:2px 6px;border-radius:5px;font-size:.88em;color:#9fe8c4}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 8px}
+.card{flex:1 1 240px;background:#11151a;border:1px solid #1e2228;border-radius:12px;padding:16px 18px}
+.card h3{margin-top:0}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+table{width:100%;border-collapse:collapse;font-size:.87rem;margin:8px 0 10px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1e2228;vertical-align:top}
+th{color:#8b949e;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+td.y{color:#5ee0a0;font-weight:600}
+td.n{color:#8b949e}
+.cta{display:inline-block;background:#5ee0a0;color:#06120c;font-weight:600;padding:12px 20px;border-radius:9px;margin:6px 8px 6px 0}
+.note{font-size:.83rem;color:#7d8590}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid #1e2228;font-size:.83rem;color:#7d8590}
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is TAPAC an alternative to Apollo.io?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For agent-driven prospecting, yes. TAPAC returns SMTP-verified contacts from a single MCP tool call at $0.10-0.50 per contact with no seat licence, while Apollo sells per-seat plans with credit ladders (Basic $49/user/month billed annually as published on apollo.io/pricing)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does TAPAC get a 2-5% bounce rate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Contacts are sourced in real time from public company websites, Discord and Telegram, and every email is validated over SMTP at request time instead of being pulled from a list verified months earlier. Static databases typically run 10-35% bounce."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does TAPAC work with Claude, Cursor and Codex?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes - it is an MCP server that runs over stdio (npx -y @tapacapi/mcp) or as a hosted streamable-HTTP endpoint at https://tapacapi.com/mcp, so any MCP-compatible client can call tapac_find_contacts and tapac_status."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I have no API key?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The server still answers: tapac_status() returns onboarding instead of erroring, so the agent can tell the user how to get a free key at https://tapacapi.com/get-key. There are 100 free searches."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a subscription or annual contract?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. TAPAC is pay-per-use: $0.10-0.50 per verified contact, 100 free searches, no subscription and no annual commitment."
+      }
+    }
+  ]
+}</script>
+</head>
+<body>
+<div class="wrap">
+<p class="note">tapacapi.com / mcp / compare</p>
+<h1>TAPAC vs Apollo vs ZoomInfo vs Hunter vs Lusha</h1>
+<p class="lead">Five ways to get business emails. Two of the five were built for a human in a browser and later wrapped in an API; TAPAC was built to be called by an agent and returns only addresses that passed SMTP validation on that request.</p>
+
+<h2>The table</h2>
+<table>
+<tr><th></th><th>TAPAC</th><th>Apollo.io</th><th>ZoomInfo</th><th>Hunter.io</th><th>Lusha</th></tr>
+<tr><td><b>Core model</b></td><td class="y">Tool call: find + verify at request time</td><td>Static database + sequences</td><td class="n">Static database + GTM platform</td><td>Domain search / email finder</td><td>Database + extension</td></tr>
+<tr><td><b>Where data comes from</b></td><td class="y">Live sourcing: public company websites, Discord, Telegram</td><td>Crawled + contributed database</td><td class="n">Crawled + contributed database</td><td>Web crawls (domain patterns)</td><td>Community + crawled database</td></tr>
+<tr><td><b>Email verification</b></td><td class="y">SMTP at request time, per address</td><td>Verification/credits inside the platform</td><td class="n">Verification/credits inside the platform</td><td>Verification, credit-metered</td><td>Verification, credit-metered</td></tr>
+<tr><td><b>Bounce rate</b></td><td class="y">2–5% (product data)</td><td>Static databases typically 10–35%</td><td class="n">Static databases typically 10–35%</td><td>Static databases typically 10–35%</td><td>Static databases typically 10–35%</td></tr>
+<tr><td><b>Pricing model</b></td><td class="y">Pay per contact, $0.10–0.50, 100 free searches</td><td>Per seat + credit ladder</td><td class="n">Consumption credits, quote-based</td><td>Per plan + credits</td><td>Per plan + credits</td></tr>
+<tr><td><b>Published entry price</b></td><td class="y">$0 — 100 free searches, then per contact</td><td>Free tier; Basic $49/user/mo annual (30,000 credits/yr), Professional $79, Organization $119 (3-seat minimum)</td><td class="n">Not published — quote-based (ZoomInfo Lite free tier)</td><td>Free 50 credits/mo; paid from $34/mo annual (2,000 credits), Growth $149/mo (10,000 credits)</td><td>Free 40 credits/mo; Starter $49.90/mo annual</td></tr>
+<tr><td><b>Seat cost for a 3-person team</b></td><td class="y">$0 fixed — you pay only for contacts found</td><td>$1,764/yr on Basic (3 x $49 x 12) before overages</td><td class="n">Quote — annual contract typical</td><td>From $408/yr (annual, single plan)</td><td>From $1,796/yr (3 x $49.90 x 12)</td></tr>
+<tr><td><b>MCP / agent-native</b></td><td class="y">Yes — MCP server (stdio + streamable HTTP), llms.txt, SKILL.md</td><td>REST API (separate from seat plan)</td><td class="n">API on higher tiers</td><td>REST API</td><td>REST API</td></tr>
+<tr><td><b>Works without a key</b></td><td class="y">Yes — server returns onboarding, never crashes the agent</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr>
+<tr><td><b>Subscription required</b></td><td class="y">No</td><td>Yes — annual billing on paid tiers</td><td class="n">Yes — annual contract typical</td><td>Paid plans are subscriptions (credits valid 12 months)</td><td>Monthly or annual plans</td></tr>
+</table>
+<p class="note">Competitor prices are the vendors' own published list prices as of 2026 (apollo.io/pricing, hunter.io/pricing; ZoomInfo pricing is not published; Lusha Starter annual as published in third-party plan comparisons). Always re-check before you buy — vendors change tiers often.</p>
+
+<h2>When each one is the right answer</h2>
+<div class="grid">
+  <div class="card"><h3>Pick Apollo or ZoomInfo if…</h3><p>You need a full sales platform: sequences, dialer, CRM sync, territory management, and humans working inside a UI all day. You're buying workflow, and contact data is one module of it.</p></div>
+  <div class="card"><h3>Pick Hunter or Lusha if…</h3><p>You mainly need to find the email pattern for a domain or a handful of names, and you're fine with credit metering at small volume.</p></div>
+  <div class="card"><h3>Pick TAPAC if…</h3><p>An agent is doing the prospecting. You want a verified list back from a tool call, sourced fresh, verified by SMTP at that moment, priced per contact — with no seat licence and no annual commit.</p></div>
+</div>
+
+<h2>Why verification is the whole ballgame</h2>
+<p>40% of emails are dead within two years (NeverBounce), and 23% of contacts change jobs every year (ZoomInfo 2025). Any list that was verified when it was built is decaying from that moment. Fresh sourcing plus validation at request time is what keeps a real campaign under a few percent bounce; TAPAC publishes 2–5% against 10–35% for static databases.</p>
+
+<h2>Try it</h2>
+<pre>npx -y @tapacapi/mcp
+# or hosted: https://tapacapi.com/mcp</pre>
+<p><a class="cta" href="https://tapacapi.com/get-key">Get a free API key</a>
+<a class="cta" href="https://github.com/axelfreeman/tapac-mcp">GitHub</a></p>
+<p class="note">Facts and sources are maintained in <a href="https://github.com/axelfreeman/tapac-mcp/blob/main/AGENTS.md">AGENTS.md</a>. Bounce and pricing figures are product claims from the vendor (tapacapi.com); the decay statistics carry third-party attribution.</p>
+
+<footer><p>Hub: <a href="/tapac-hub/">TAPAC for AI agents</a> · <a href="https://tapacapi.com">tapacapi.com</a></p></footer>
+</div>
+</body>
+</html>
