@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lead cost &amp; bounce-risk calculator — what a stale contact list really costs</title>
+<meta name="description" content="Free calculator: compare pay-per-use verified contacts against a static database. Inputs: contacts needed, price per contact, bounce rate, list refresh. Sources cited, everything computed in your browser.">
+<link rel="canonical" href="https://axelfreeman.github.io/tapac-hub/lead-cost-calculator.html">
+<link rel="alternate" type="text/plain" href="/tapac-hub/llms.txt">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font:16px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0b0d10;color:#e6e8eb;padding:0 20px}
+.wrap{max-width:860px;margin:0 auto;padding:56px 0 80px}
+h1{font-size:2.05rem;line-height:1.22;letter-spacing:-.02em;margin-bottom:14px}
+h2{font-size:1.28rem;margin:40px 0 12px;border-bottom:1px solid #1e2228;padding-bottom:8px}
+p{margin:0 0 14px;color:#b9c0c8}
+a{color:#5ee0a0;text-decoration:none}a:hover{text-decoration:underline}
+.lead{font-size:1.08rem;color:#dfe3e8}
+code{font-family:ui-monospace,Menlo,monospace;background:#171c22;padding:2px 6px;border-radius:5px;font-size:.88em;color:#9fe8c4}
+pre{font-family:ui-monospace,Menlo,monospace;background:#12161b;border:1px solid #1e2228;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:.86rem;color:#d7f5e6;margin:0 0 16px}
+.panel{background:#11151a;border:1px solid #1e2228;border-radius:12px;padding:18px 20px;margin:18px 0}
+label{display:block;font-size:.85rem;color:#8b949e;margin:12px 0 5px}
+input[type=number],select{width:100%;background:#0e1216;border:1px solid #262c34;color:#e6e8eb;border-radius:8px;padding:9px 11px;font:inherit}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+button{background:#5ee0a0;color:#06120c;font-weight:600;border:0;border-radius:9px;padding:12px 20px;font-size:1rem;cursor:pointer;margin-top:16px}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:10px 0}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1e2228}
+th{color:#8b949e;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.big{font-size:1.6rem;color:#5ee0a0;font-weight:600}
+.warn{color:#ffb86b}
+.cta{display:inline-block;background:#5ee0a0;color:#06120c;font-weight:600;padding:12px 20px;border-radius:9px;margin:6px 8px 6px 0}
+.note{font-size:.83rem;color:#7d8590}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid #1e2228;font-size:.83rem;color:#7d8590}
+</style>
+</head>
+<body><div class="wrap">
+<h1>What a stale contact list actually costs you</h1>
+<p class="lead">Two ways to get B2B contacts: buy a static database and hope it is still accurate, or pull fresh contacts per use and verify each address over SMTP before you send. The difference shows up as bounce rate — and bounce rate is what burns the domain you send from.</p>
+<p class="note">Everything below is computed in your browser. No signup, nothing leaves the page.</p>
+
+<div class="panel">
+  <div class="grid2">
+    <div><label>Contacts you need per month</label><input type="number" id="n" value="2000" min="1" step="100"></div>
+    <div><label>Price per contact (USD)</label><input type="number" id="price" value="0.25" min="0.01" step="0.05"></div>
+  </div>
+  <div class="grid2">
+    <div><label>Bounce rate — static database</label>
+      <select id="bdb"><option value="0.10">10% (optimistic)</option><option value="0.20" selected>20% (typical 10–35%)</option><option value="0.35">35% (worst case)</option></select></div>
+    <div><label>Bounce rate — verified fresh pull</label>
+      <select id="bfresh"><option value="0.02" selected>2% (TAPAC 2–5%)</option><option value="0.05">5% (upper end)</option></select></div>
+  </div>
+  <div class="grid2">
+    <div><label>Cost of the static database, USD / year (seat + credits)</label><input type="number" id="seat" value="588" min="0" step="12"></div>
+    <div><label>Emails you send per month from your main domain</label><input type="number" id="sends" value="4000" min="0" step="100"></div>
+  </div>
+  <button onclick="calc()">Calculate</button>
+</div>
+
+<h2>Result</h2>
+<div class="panel" id="out">Press <strong>Calculate</strong>.</div>
+
+<h2>What the numbers mean</h2>
+<table><thead><tr><th>Line</th><th>Why it matters</th></tr></thead><tbody>
+<tr><td>Bounced sends</td><td>Every bounce is a wasted send against your sending reputation. Mailbox providers watch the ratio, not your intent.</td></tr>
+<tr><td>Usable contacts</td><td>You bought N contacts; you can only write to N minus bounces. Databases are sold on records, not on deliverable records.</td></tr>
+<tr><td>True cost per usable contact</td><td>The number to compare across vendors. It is always higher than the list price you were quoted.</td></tr>
+<tr><td>Seat cost</td><td>Static databases charge per seat per year before you export anything — and you keep paying for stale rows (23% of contacts change jobs annually, ZoomInfo 2025).</td></tr>
+</tbody></table>
+<p class="note">Sources for the rates used as defaults: TAPAC bounce 2–5% vs 10–35% for static databases (TAPAC AGENTS.md), 23% of contacts change jobs annually (ZoomInfo 2025), 40% of emails dead within two years (NeverBounce), fresh scraped data outperforms stale databases by 42% (Harvard Business Review 2024).</p>
+
+<h2>How to get the verified side</h2>
+<p>TAPAC is a pay-per-use contact engine with SMTP verification, exposed as an MCP server so an agent can call it directly. 100 searches included, then $0.10–0.50 per contact — no seat, no annual contract.</p>
+<pre>npx -y @tapacapi/mcp</pre>
+<p><a class="cta" href="https://tapacapi.com/get-key">Get a free key</a><a class="cta" href="/tapac-hub/">Read the install guide</a></p>
+<p class="note">Or compare against seat-priced vendors first: <a href="/tapac-hub/compare.html">TAPAC vs Apollo / ZoomInfo / Hunter / Lusha</a>.</p>
+
+<footer>TAPAC MCP server — <a href="https://github.com/axelfreeman/tapac-mcp">github.com/axelfreeman/tapac-mcp</a> · npm <code>@tapacapi/mcp</code> · <a href="https://tapacapi.com/mcp">tapacapi.com/mcp</a></footer>
+</div>
+<script>
+function money(x){return "$" + x.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function calc(){
+  var n=+document.getElementById("n").value||0,
+      price=+document.getElementById("price").value||0,
+      bdb=+document.getElementById("bdb").value,
+      bf=+document.getElementById("bfresh").value,
+      seat=+document.getElementById("seat").value||0,
+      sends=+document.getElementById("sends").value||0;
+  var paid=n*price,
+      dbBounce=n*bdb, freshBounce=n*bf,
+      dbOk=n-dbBounce, freshOk=n-freshBounce,
+      dbCost=paid+seat, freshCost=paid,
+      dbPer=dbOk>0?dbCost/dbOk:0, freshPer=freshOk>0?freshCost/freshOk:0,
+      wasted=dbBounce-freshBounce,
+      wastedPct=sends>0?(wasted/sends*100):0;
+  var html="<table><tr><th>Metric</th><th style='text-align:right'>Static database</th><th style='text-align:right'>Verified fresh pull</th></tr>"+
+   "<tr><td>Contacts paid for</td><td class='num'>"+n.toLocaleString("en-US")+"</td><td class='num'>"+n.toLocaleString("en-US")+"</td></tr>"+
+   "<tr><td>Expected bounces</td><td class='num warn'>"+Math.round(dbBounce).toLocaleString("en-US")+"</td><td class='num'>"+Math.round(freshBounce).toLocaleString("en-US")+"</td></tr>"+
+   "<tr><td>Writable contacts</td><td class='num'>"+Math.round(dbOk).toLocaleString("en-US")+"</td><td class='num'>"+Math.round(freshOk).toLocaleString("en-US")+"</td></tr>"+
+   "<tr><td>Contact spend</td><td class='num'>"+money(paid)+"</td><td class='num'>"+money(paid)+"</td></tr>"+
+   "<tr><td>Seat / platform fee (yr, monthly share shown = /12)</td><td class='num'>"+money(seat/12)+"</td><td class='num'>"+money(0)+"</td></tr>"+
+   "<tr><td>True cost per writable contact</td><td class='num'><span class='big'>"+money(dbPer)+"</span></td><td class='num'><span class='big'>"+money(freshPer)+"</span></td></tr></table>";
+  if(wasted>0){
+    html+="<p>You would send <strong>"+Math.round(wasted).toLocaleString("en-US")+" fewer bounced emails</strong> per month"+
+      (sends>0?" — "+wastedPct.toFixed(1)+"% of your "+sends.toLocaleString("en-US")+" monthly sends are addresses that never existed or died":"")+".</p>";
+  }
+  html+="<p class='note'>Assumes the same contact price on both sides. If the static vendor's list price is lower, retype it above — the gap in writable contacts still decides the true cost.</p>";
+  document.getElementById("out").innerHTML=html;
+}
+calc();
+</script>
+<!-- schema.org: WebApplication + FAQ -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Lead cost & bounce-risk calculator","url":"https://axelfreeman.github.io/tapac-hub/lead-cost-calculator.html","applicationCategory":"BusinessApplication","operatingSystem":"Any (browser)","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Compare pay-per-use SMTP-verified B2B contacts against a static contact database: bounces, writable contacts, true cost per usable contact.","featureList":["bounce rate comparison","true cost per writable contact","wasted-send estimate"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Why is cost per contact misleading?","acceptedAnswer":{"@type":"Answer","text":"It is quoted per record, not per deliverable record. A static database bouncing at 20% means a fifth of what you paid for can never be used, so the true cost per writable contact is higher than the list price."}},
+{"@type":"Question","name":"What bounce rate should I expect from a static contact database?","acceptedAnswer":{"@type":"Answer","text":"10-35% is the range cited for static databases; verified fresh pulls land at 2-5%. Sources: TAPAC AGENTS.md."}},
+{"@type":"Question","name":"Do I need a seat licence to use TAPAC?","acceptedAnswer":{"@type":"Answer","text":"No. TAPAC is pay-per-use at $0.10-0.50 per contact with 100 free searches and no annual seat fee."}}]}
+</script>
+</body></html>
